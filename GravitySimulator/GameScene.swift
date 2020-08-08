@@ -28,10 +28,10 @@ class GameScene: SKScene {
             userCamera.xScale += 1
             userCamera.yScale += 1
         case 47: // .
-            self.physicsWorld.speed += 1
+            self.physicsWorld.speed += 0.5
         case 43: // ,
             guard self.physicsWorld.speed > 0 else { return }
-            self.physicsWorld.speed -= 1
+            self.physicsWorld.speed -= 0.5
         case 126: // up
             userCamera.position.y += 20
         case 125: // down
@@ -71,6 +71,7 @@ class GameScene: SKScene {
         // Initialize the scene
         self.backgroundColor = .black
         self.physicsWorld.gravity = .zero
+        self.physicsWorld.speed = 1
         
         // Add center gravity object
         addObject(
@@ -80,7 +81,7 @@ class GameScene: SKScene {
         )
         
         // Add random objects
-        for _ in 0..<Constants.objectCount {
+        for _ in 0..<Constants.initialObjectCount {
             addRandomObject()
         }
         
@@ -133,7 +134,9 @@ class GameScene: SKScene {
     }
     
     private func updateGravity() {
+        let asyncGroup = DispatchGroup()
         for objectA in objects {
+            asyncGroup.enter()
             for objectB in objects {
                 let acceleration : CGFloat = {
                     let G  = Constants.gravityConst
@@ -149,6 +152,7 @@ class GameScene: SKScene {
                 )
                 objectA.physicsBody!.applyForce(force)
             }
+            asyncGroup.leave()
         }
     }
     

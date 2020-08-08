@@ -11,16 +11,17 @@ struct Constants {
     
     private init() {}
     
+    // Object spawning
     static let objectsSpawnRangeX : ClosedRange<CGFloat> = 300...500
-    static let objectsSpawnRangeY : ClosedRange<CGFloat> = 300...500
+    static let objectsSpawnRangeY : ClosedRange<CGFloat> = 0...0
+    static let initialObjectCount : Int = 10
+    static let initialSpeedRangeX : ClosedRange<CGFloat> = 0...0
+    static let initialSpeedRangeY : ClosedRange<CGFloat> = 700...1200
     
-    static let objectCount : Int = 10
-    
+    // Center object
     static let centerObjectMass : CGFloat = 800000000
     
-    static let initialSpeedRangeX : ClosedRange<CGFloat> = -600...(-400)
-    static let initialSpeedRangeY : ClosedRange<CGFloat> = 400...600
-    
-    static let gravityConst : CGFloat = 0.6
+    // Gravity constant, can be any number
+    static let gravityConst : CGFloat = 0.7
     
 }
