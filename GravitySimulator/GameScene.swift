@@ -40,6 +40,8 @@ class GameScene: SKScene {
             userCamera.position.x -= 20
         case 124: // right
             userCamera.position.x += 20
+        case 35: // p
+            self.isPaused.toggle()
         case 0: // a
             addRandomObject()
         case 15: // r
