@@ -140,6 +140,9 @@ class GameScene: SKScene {
         for objectA in objects {
             asyncGroup.enter()
             for objectB in objects {
+                
+                guard objectA.distance(from: objectB) != 0 else { continue }
+                
                 let acceleration : CGFloat = {
                     let G  = Constants.gravityConst
                     let m1 = objectA.physicsBody!.mass

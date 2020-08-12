@@ -22,6 +22,6 @@ struct Constants {
     static let centerObjectMass : CGFloat = 800000000
     
     // Gravity constant, can be any number
-    static let gravityConst : CGFloat = 0.7
+    static let gravityConst : CGFloat = 0.6
     
 }

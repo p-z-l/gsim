@@ -8,4 +8,12 @@
 import SpriteKit
 
 class Object: SKShapeNode {
+    
+    var radius : CGFloat?
+    
+    func distance(from object: Object) -> CGFloat {
+        let distance = self.position.distance(from: object.position)
+        return distance - (self.radius ?? 0) - (object.radius ?? 0)
+    }
+    
 }
