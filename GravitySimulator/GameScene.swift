@@ -7,7 +7,6 @@
 
 import SpriteKit
 import GameplayKit
-import Numerics
 
 class GameScene: SKScene {
     
