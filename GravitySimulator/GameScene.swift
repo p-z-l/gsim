@@ -114,6 +114,7 @@ class GameScene: SKScene {
         object.physicsBody!.isDynamic = isDynamic
         object.physicsBody!.restitution = 0.0
         object.physicsBody!.linearDamping = 0.0
+        object.radius = radius
         self.addChild(object)
     }
     
