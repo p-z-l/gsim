@@ -78,7 +78,8 @@ class GameScene: SKScene {
         addObject(
             mass: Constants.centerObjectMass,
             radius: 128,
-            color: .white
+            color: .white,
+            isCenterObject: true
         )
         
         // Add random objects
@@ -101,7 +102,8 @@ class GameScene: SKScene {
         color: NSColor = .random,
         position: CGPoint = .zero,
         initialVelocity: CGVector = .zero,
-        isDynamic: Bool = true
+        isDynamic: Bool = true,
+        isCenterObject: Bool = false
     ) {
         let object = Object(circleOfRadius: radius)
         object.position = position
@@ -115,6 +117,7 @@ class GameScene: SKScene {
         object.physicsBody!.restitution = 0.0
         object.physicsBody!.linearDamping = 0.0
         object.radius = radius
+        object.isCenterObject = isCenterObject
         self.addChild(object)
     }
     
@@ -142,6 +145,7 @@ class GameScene: SKScene {
             for objectB in objects {
                 
                 guard objectA.distance(from: objectB) != 0 else { continue }
+                guard !objectA.isCenterObject else { continue }
                 
                 let acceleration : CGFloat = {
                     let G  = Constants.gravityConst

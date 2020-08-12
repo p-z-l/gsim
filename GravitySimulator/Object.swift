@@ -10,6 +10,7 @@ import SpriteKit
 class Object: SKShapeNode {
     
     var radius : CGFloat?
+    var isCenterObject = false
     
     func distance(from object: Object) -> CGFloat {
         let distance = self.position.distance(from: object.position)
