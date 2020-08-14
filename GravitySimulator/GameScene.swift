@@ -99,7 +99,7 @@ class GameScene: SKScene {
     private func addObject(
         mass: CGFloat,
         radius: CGFloat,
-        color: NSColor = .random,
+        color: NSColor = .magicRandom,
         position: CGPoint = .zero,
         initialVelocity: CGVector = .zero,
         isDynamic: Bool = true,
