@@ -89,6 +89,8 @@ class GameScene: SKScene {
         
         // Initialize camera
         userCamera.position = .zero
+        userCamera.xScale = 2
+        userCamera.yScale = 2
         self.camera = userCamera
     }
     
