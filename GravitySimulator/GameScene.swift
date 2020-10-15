@@ -36,6 +36,7 @@ class GameScene: SKScene {
                 self.physicsWorld.speed = 1
                 newlyAddedObject = nil
                 self.childNode(withName: "velIndicator")?.removeFromParent()
+                self.children.filter { $0.name == "TrajPredict" }.forEach { $0.removeFromParent() }
             }
         }
     }
@@ -128,7 +129,7 @@ class GameScene: SKScene {
         userCamera.position = (selectedObject ?? centerGravityObject!).position
         self.camera = userCamera
         if userIsAddingObject {
-            // TODO: Show Trajectory Prediction
+            updateTrajPredictIfNeeded()
         }
     }
     
@@ -245,8 +246,6 @@ class GameScene: SKScene {
         for objectA in objects {
             for objectB in objects {
 
-                guard objectA.position.distance(from: objectB.position) <= 1000 || objectB.isCenterObject || objectA.isCenterObject else { continue }
-
                 let force = gravitationalForce(
                     from: objectA.position,
                     m1: objectA.physicsBody!.mass,
@@ -256,6 +255,38 @@ class GameScene: SKScene {
                 objectA.physicsBody!.applyForce(force)
             }
         }
+    }
+    
+    private func updateTrajPredictIfNeeded() {
+        let predictNodeName = "TrajPredict"
+        self.children.filter { $0.name == predictNodeName }.forEach { $0.removeFromParent() }
+        let p2 = centerGravityObject!.position
+        let m2 = centerGravityObject!.physicsBody!.mass
+        let m1 = newlyAddedObject!.physicsBody!.mass
+        var prevPos = newlyAddedObject!.position
+        var prevVel = newlyAddedObject!.physicsBody!.velocity
+        var points : [CGPoint] = [prevPos]
+        for _ in 0..<24 {
+            let p1 = prevPos
+            let f = gravitationalForce(
+                from: p1,
+                m1: m1,
+                to: p2,
+                m2: m2
+            )
+            let vel = CGVector(dx: f.dx/m1 + prevVel.dx, dy: f.dy/m1 + prevVel.dy)
+            prevVel = vel
+            let pos = CGPoint(x: prevPos.x + vel.dx, y: prevPos.y + vel.dy)
+            prevPos = pos
+            
+            points.append(pos)
+        }
+        let trajNode = SKShapeNode(splinePoints: &points, count: points.count)
+        trajNode.name = predictNodeName
+        trajNode.lineWidth = 10.0
+        trajNode.strokeColor = .darkGray
+        trajNode.isAntialiased = true
+        self.addChild(trajNode)
     }
     
 }
