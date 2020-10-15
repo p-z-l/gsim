@@ -709,9 +709,25 @@
                     <view key="view" id="m2S-Jp-Qdl" customClass="SKView">
                         <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="R5O-hE-ncc">
+                                <rect key="frame" x="18" y="564" width="764" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Velocity: (0.0000000, 0.000000)" id="ayF-St-qcv">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="R5O-hE-ncc" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="VLm-u9-Id6"/>
+                            <constraint firstAttribute="trailing" secondItem="R5O-hE-ncc" secondAttribute="trailing" constant="20" id="bVh-Ml-Pt2"/>
+                            <constraint firstItem="R5O-hE-ncc" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="vxv-Sd-R4d"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="skView" destination="m2S-Jp-Qdl" id="qux-te-cT3"/>
+                        <outlet property="velocityLabel" destination="R5O-hE-ncc" id="Jbn-BD-aoT"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

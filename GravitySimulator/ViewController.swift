@@ -13,6 +13,8 @@ class ViewController: NSViewController {
 
     @IBOutlet var skView: SKView!
     
+    @IBOutlet weak var velocityLabel: NSTextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,7 +32,24 @@ class ViewController: NSViewController {
             
             view.showsFPS = true
             view.showsNodeCount = true
+            
+            NotificationCenter.default.addObserver(
+                self, selector: #selector(newObjcSelected(_:)), name: Notification.Name("NewObjectSelected"), object: nil)
         }
     }
+    
+    @objc func newObjcSelected(_ notification: Notification) {
+        
+        guard let object = notification.object as? Object else {
+            velocityLabel.isHidden = true
+            return
+        }
+
+        velocityLabel.isHidden = false
+        let vel = object.physicsBody!.velocity
+        velocityLabel.stringValue = "Velocity: (\(vel.dx.rounded()),\(vel.dy.rounded()))"
+        
+    }
+    
 }
 

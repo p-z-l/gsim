@@ -14,6 +14,20 @@ class GameScene: SKScene {
     
     private var newlyAddedObject : Object?
     
+    private var selectedObject: Object? {
+        willSet {
+            selectedObject?.lineWidth = 0.0
+            selectedObject?.strokeColor = .clear
+        }
+        didSet {
+            selectedObject?.lineWidth = 2.0
+            selectedObject?.strokeColor = .white
+            NotificationCenter.default.post(Notification(name: Notification.Name("NewObjectSelected"), object: selectedObject, userInfo: nil))
+            userCamera.position = (selectedObject ?? centerGravityObject!).position
+            self.camera = userCamera
+        }
+    }
+    
     private var userIsAddingObject = false {
         didSet {
             if userIsAddingObject {
@@ -50,8 +64,20 @@ class GameScene: SKScene {
     }
     
     override func mouseDown(with event: NSEvent) {
-        userAddObject()
-        newlyAddedObject?.position = event.location(in: self)
+        let position = event.location(in: self)
+        var hasSelectedAnObject = false
+        for object in objects {
+            if position.distance(from: object.position) <= (object.radius ?? 0) {
+                // Selected an object
+                selectedObject = object
+                hasSelectedAnObject = true
+            }
+        }
+        if !hasSelectedAnObject {
+            userAddObject()
+            newlyAddedObject?.position = event.location(in: self)
+            selectedObject = nil
+        }
     }
     
     override func mouseDragged(with event: NSEvent) {
@@ -73,9 +99,7 @@ class GameScene: SKScene {
     private func initializeScene() {
         
         // Remove existing objects
-        for object in objects {
-            object.removeFromParent()
-        }
+        self.removeAllChildren()
         
         // Initialize the scene
         self.backgroundColor = .black
@@ -100,11 +124,16 @@ class GameScene: SKScene {
         
     }
     
+    override func update(_ currentTime: TimeInterval) {
+        userCamera.position = (selectedObject ?? centerGravityObject!).position
+        self.camera = userCamera
+        if userIsAddingObject {
+            // TODO: Show Trajectory Prediction
+        }
+    }
+    
     override func didSimulatePhysics() {
         updateGravity()
-        
-        userCamera.position = centerGravityObject?.position ?? .zero
-        self.camera = userCamera
         
         removeDistantObjects()
     }
@@ -199,29 +228,33 @@ class GameScene: SKScene {
         self.addChild(indicator)
     }
     
+    private func gravitationalForce(from p1: CGPoint, m1: CGFloat, to p2:CGPoint, m2: CGFloat) -> CGVector {
+        let magnitude : CGFloat = {
+            let G = Constants.gravityConst
+            let r = p1.distance(from: p2)
+            return G*m1*m2/pow(r, 2)
+        }()
+        return CGVector.acceleration(
+            magnitude,
+            from: p1,
+            to: p2
+        )
+    }
+    
     private func updateGravity() {
-        let asyncGroup = DispatchGroup()
         for objectA in objects {
-            asyncGroup.enter()
             for objectB in objects {
-                
+
                 guard objectA.position.distance(from: objectB.position) <= 1000 || objectB.isCenterObject || objectA.isCenterObject else { continue }
-                
-                let acceleration : CGFloat = {
-                    let G  = Constants.gravityConst
-                    let m1 = objectA.physicsBody!.mass
-                    let m2 = objectB.physicsBody!.mass
-                    let r  = objectA.position.distance(from: objectB.position)
-                    return G*m1*m2/pow(r, 2)
-                }()
-                let force : CGVector = CGVector.acceleration(
-                    acceleration,
+
+                let force = gravitationalForce(
                     from: objectA.position,
-                    to: objectB.position
+                    m1: objectA.physicsBody!.mass,
+                    to: objectB.position,
+                    m2: objectB.physicsBody!.mass
                 )
                 objectA.physicsBody!.applyForce(force)
             }
-            asyncGroup.leave()
         }
     }
     
